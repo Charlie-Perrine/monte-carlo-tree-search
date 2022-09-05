@@ -69,7 +69,6 @@ def play():
 
 
     #TODO how do we keep on playing?
-    #Do we use petting zoo?
     #Whos the other agent?
 
     #TODO Implement an agent that picks a random move.
