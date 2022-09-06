@@ -13,3 +13,4 @@ dist/
 mctspy.egg-info/
 
 .direnv/
+.python-version
