@@ -1,8 +1,6 @@
 import numpy as np
-from mctspy.games.common import TwoPlayersAbstractGameState, AbstractGameAction
 
-
-class TicTacToeMove(AbstractGameAction):
+class TicTacToeMove():
     def __init__(self, x_coordinate, y_coordinate, value):
         self.x_coordinate = x_coordinate
         self.y_coordinate = y_coordinate
@@ -16,7 +14,7 @@ class TicTacToeMove(AbstractGameAction):
         )
 
 
-class TicTacToeGameState(TwoPlayersAbstractGameState):
+class TicTacToeGameState():
 
     x = 1
     o = -1
@@ -30,6 +28,9 @@ class TicTacToeGameState(TwoPlayersAbstractGameState):
             win = self.board_size
         self.win = win
         self.next_to_move = next_to_move
+
+    def __repr__(self):        
+        return repr(self.board.flatten())
 
     @property
     def game_result(self):

@@ -1,22 +1,40 @@
-from cgi import test
 import numpy as np
 import random
 
-import matplotlib.pyplot as plt
-
-from mctspy.games.examples.tictactoe import TicTacToeGameState
 from agent import RandomAgent, MCTSAgent
+from game import TicTacToeGameState, TicTacToeMove
+
+from pettingzoo.classic import tictactoe_v3
+
+import itertools
 
 #TODO Understand the Tic3 env
 
 #TODO Implement a play function
 
 
-
-def play():
+def play(agents):
     """
     Playing a game of Tic Tac Toe with two agents
     """
+
+    # agents = ((agents[0], 1), (agents[1], -1))
+    env = TicTacToeGameState(np.zeros((3, 3)))
+
+    for agent in itertools.cycle(agents):
+
+        if env.is_game_over():
+            exit()
+            # TODO Reward
+            break
+
+        action = agent.move(env)
+        env = env.move(action)
+        print()
+        print(env.board)
+        print()
+
+    exit()
 
     #Initializes a new game
     state = np.zeros((5, 5))
@@ -61,6 +79,8 @@ def play():
         print('board_enemy: \n', state)
 
 
+m = MCTSAgent()
 
-
-play()
+agents = (m, m)
+# agents = (RandomAgent(), RandomAgent())
+play(agents)

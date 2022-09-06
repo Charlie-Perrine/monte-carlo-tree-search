@@ -3,9 +3,9 @@ Agents
 """
 
 import random
+import numpy as np
 
-from mctspy.tree.nodes import TwoPlayersGameMonteCarloTreeSearchNode
-from mctspy.tree.search import MonteCarloTreeSearch
+from tree import Node, MonteCarloTreeSearch
 from parameters import params
 
 class Agent:
@@ -24,9 +24,11 @@ class RandomAgent(Agent):
     def __init__(self) -> None:
         super().__init__()
 
-    def move(self, board):
-        """Returns a random move (np array)."""
-        return random.choice(board.get_legal_actions())
+    def move(self, env):
+        """
+        Returns a random move (np array).
+        """
+        return random.choice(env.get_legal_actions())
 
 class MCTSAgent(Agent):
     """
@@ -35,11 +37,20 @@ class MCTSAgent(Agent):
 
     def __init__(self) -> None:
         super().__init__()
+        self.mcts = None
+        self.nodes = {}
 
-    def move(self, board):
-        """Returns the best state (T3 format)"""
+    def move(self, env):
+        """
+        Returns the best state (T3 format)
+        """
+        if repr(env) not in self.nodes:
+            node = Node()
+        repr(env)
+        # node = 
+        exit()
         #Current root
-        current_root = TwoPlayersGameMonteCarloTreeSearchNode(state = board)
+        current_root = Node(state = board)
 
         #MCTS TODO Are we resetting the MCTS
         mcts = MonteCarloTreeSearch(current_root)
