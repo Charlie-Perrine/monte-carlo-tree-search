@@ -37,25 +37,29 @@ class MCTSAgent(Agent):
 
     def __init__(self) -> None:
         super().__init__()
-        self.mcts = None
+        self.mcts = MonteCarloTreeSearch(None)
+        self.last = None, None
         self.nodes = {}
+
+    def reset(self):
+        self.last = None, None
 
     def move(self, env):
         """
         Returns the best state (T3 format)
         """
-        if repr(env) not in self.nodes:
-            node = Node()
-        repr(env)
-        # node = 
-        exit()
-        #Current root
-        current_root = Node(state = board)
+        if (key := repr(env)) not in self.nodes:
+            parent, action = self.last
+            node = Node(env, action, parent)
+            self.nodes[key] = node
+        else:
+            node = self.nodes[key]
 
-        #MCTS TODO Are we resetting the MCTS
-        mcts = MonteCarloTreeSearch(current_root)
+        self.mcts.root = node
+        best_node = self.mcts.best_action(params.num_simulations)
+        action = best_node.action
 
-        #Picks best node
-        best_node = mcts.best_action(params.num_simulations)
+        # TODO Reset this on game_over
+        self.last = node, action
 
-        return best_node.state
+        return best_node.action

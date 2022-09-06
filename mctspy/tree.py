@@ -2,6 +2,7 @@ import numpy as np
 from collections import defaultdict
 
 import time
+
 class MonteCarloTreeSearch(object):
 
     def __init__(self, node):
@@ -64,8 +65,9 @@ class MonteCarloTreeSearch(object):
 
 class Node():
 
-    def __init__(self, state, parent=None):
+    def __init__(self, state, action, parent=None):
         self.state = state
+        self.action = action
         self.parent = parent
         self.children = []
         self._number_of_visits = 0.
@@ -91,7 +93,8 @@ class Node():
     def expand(self):
         action = self.untried_actions.pop()
         next_state = self.state.move(action)
-        child_node = Node(next_state, parent=self)
+        # TODO Do we need to track this globally
+        child_node = Node(next_state, action, parent=self)
         self.children.append(child_node)
         return child_node
 
