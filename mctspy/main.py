@@ -19,16 +19,25 @@ def play():
         action = mcts.move(env)
         env = env.move(action)
 
+        print(env.board, '\n')
+
         if env.is_game_over():
             break
 
-        action = rand.move(env)
+        action = mcts.move(env)
         env = env.move(action)
 
+        print(env.board, '\n')
+
         if env.is_game_over():
             break
-
+    result = env.game_result
     mcts.reset()
+    return result
 
-for _ in range(100):
-    play()
+res = []
+for _ in range(10000):
+    r = play()
+    res.append(r)
+    print('Game Over \n\n')
+print(f'wins{res.count(1)} losses{res.count(-1)} draws{res.count(0)}')

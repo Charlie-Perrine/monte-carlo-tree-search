@@ -40,7 +40,7 @@ class MonteCarloTreeSearch(object):
                 if time.time() > end_time:
                     break
         else :
-            for _ in range(0, simulations_number):            
+            for _ in range(0, simulations_number):
                 v = self._tree_policy()
                 reward = v.rollout()
                 v.backpropagate(reward)
@@ -125,5 +125,5 @@ class Node():
         ]
         return self.children[np.argmax(choices_weights)]
 
-    def rollout_policy(self, possible_moves):        
+    def rollout_policy(self, possible_moves):
         return possible_moves[np.random.randint(len(possible_moves))]
