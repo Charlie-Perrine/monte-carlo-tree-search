@@ -19,8 +19,8 @@ def play():
 
         action = mcts.move(env)
         env = env.move(action)
-
-        print(env.board, '\n')
+        print(type(action))
+        agent1_train = (env.board, action, env.game_result)
 
         if env.is_game_over():
             break
@@ -28,22 +28,29 @@ def play():
         action = mcts.move(env)
         env = env.move(action)
 
-        print(env.board, '\n')
+        agent2_train = (env.board, action, env.game_result)
 
         if env.is_game_over():
             break
-    result = env.game_result
     mcts.reset()
-    return result
+    #result = env.game_result
+    #return result
+    return agent1_train, agent2_train
 
-res = []
-for _ in range(10000):
-    r = play()
-    res.append(r)
-    print('Game Over \n\n')
-print(f'wins{res.count(1)} losses{res.count(-1)} draws{res.count(0)}')
+#res = []
+for _ in range(1):
+    r1, r2 = play()
+    #res.append(r)
+    #print('Game Over \n\n')
+#print(f'wins{res.count(1)} losses{res.count(-1)} draws{res.count(0)}')
+print(r1)
+print(r2)
 
-
+score_1 = (234, 233, 533)
+score_2 = (216, 191, 593)
+score_3 = (215, 226, 559)
+score_4 = (225, 240, 535)
+score_5 = (106, 21, 9873)
 
 def train():
 
@@ -52,10 +59,11 @@ def train():
     NN = A2CAgent()
     MCTS = MCTSAgent(NN) # TODO init MCTS agent with a neural network
 
-    # 2. Call play to generate positions using self.play with MCTS (btw. for chess, take max 30 positions by game to avoid overfitting)
+    # DONE 2. Call play to generate positions using self.play with MCTS (btw. for chess, take max 30 positions by game to avoid overfitting)
     for _ in range(1000):
-        positions = play() # TODO play() should return a list of positions (board, action, value)
-        BUFFER.append(positions)
+        positions1, positions2 = play()
+        BUFFER.append(positions1)
+        BUFFER.append(positions2)
 
     # 3. Train the network using the buffer:
     for _ in range(200):
@@ -65,3 +73,4 @@ def train():
     MCTS.update(NN) # TODO update MCTS with the new NN
 
     # 5. Start over.
+    return BUFFER

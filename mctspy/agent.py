@@ -55,7 +55,7 @@ class MCTSAgent(Agent):
         else:
             node = self.nodes[key]
 
-        print(f"{node}, childrens: {len(node.children)}\nVisits:{node._number_of_visits}, Value:{node._results}")
+        #print(f"{node}, childrens: {len(node.children)}\nVisits:{node._number_of_visits}, Value:{node._results}")
 
         self.mcts.root = node
         best_node = self.mcts.best_action(params.num_simulations)
