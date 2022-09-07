@@ -8,8 +8,6 @@ import torch.nn as nn
 
 from parameters import params
 
-# from config import CFG
-
 class A2CNet(nn.Module):
     """
     A2C Neural Network
@@ -69,13 +67,15 @@ class A2CNet(nn.Module):
         # torch.clamp(y_pol, min=10e-39, max=1)
         return y_val, y_pol.exp()
 
-example_tuple = torch.from_numpy(
+
+# Tests
+example_tuple = torch.tensor(
     np.array([[-1.,  1.,  1.],
        [ 1., -1., -1.],
        [-1.,  1.,  1.]])
     )
 example_tuple = torch.unsqueeze(example_tuple, dim = -1).float()
-example_tuple = torch.permute(example_tuple, (2, 0, 1))
+example_tuple = torch.permute(example_tuple.float(), (2, 0, 1))
 
 A2C = A2CNet()
 A2C(example_tuple)

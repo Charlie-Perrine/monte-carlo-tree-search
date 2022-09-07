@@ -11,6 +11,7 @@ import torch
 from tree import Node, MonteCarloTreeSearch
 from parameters import params
 
+from buffer import BUF
 from network import A2CNet
 
 class Agent:
@@ -53,14 +54,15 @@ class MCTSAgent(Agent):
         """
         Returns the best state (T3 format)
         """
+        #If the current node (repr(env)) hasn't been visited yet
+        #We initialize it with the parent node and action
+        #Else we take the current node
         if (key := repr(env)) not in self.nodes:
             parent, action = self.last
             node = Node(env, action, parent)
             self.nodes[key] = node
         else:
             node = self.nodes[key]
-
-        #print(f"{node}, childrens: {len(node.children)}\nVisits:{node._number_of_visits}, Value:{node._results}")
 
         self.mcts.root = node
         best_node = self.mcts.best_action(params.num_simulations)
@@ -101,11 +103,14 @@ class A2CAgent(Agent):
         """
         Trains the model.
         """
-        old, act, rwd, new = BUF.get()
-        val, pol = self.net(old)
+        #TODO
 
-        entropy = (pol.detach() * torch.log(pol.detach())).sum(axis=1)
+        board, action, value = BUF.get()
+        val, pol = self.net(board)
 
+        #entropy = (pol.detach() * torch.log(pol.detach())).sum(axis=1)
+
+        #TODO
         y_pred_pol = torch.log(torch.gather(pol, 1, act).squeeze(1) + 1e-6)
         y_pred_val = val.squeeze(1)
         y_true_val = rwd + CFG.gamma * self.net(new)[0].squeeze(1).detach()
@@ -117,6 +122,7 @@ class A2CAgent(Agent):
 
         self.idx += 1
 
+        #TODO tp??
         # print(y_pred_pol)
         tp = pol[0].detach()
         tps, _ = torch.sort(tp, descending=True)
@@ -124,6 +130,8 @@ class A2CAgent(Agent):
         print(tps.numpy()[:5])
         #print(self.idx, pol_loss, loss)
 
+
+        #Backprop
         self.opt.zero_grad()
         loss.backward()
         #torch.nn.utils.clip_grad_norm_(self.net.pol.parameters(), 0.001)

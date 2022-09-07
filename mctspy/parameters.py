@@ -11,6 +11,7 @@ class Parameters():
         self.convolution_layers = 3
         self.buffer_size = 1000
         self.learning_rate = 0.001
+        self.batch_size = 200
 
 
 params = Parameters()

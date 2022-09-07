@@ -11,47 +11,57 @@ rand = RandomAgent()
 def play():
     """
     Playing a game of Tic Tac Toe with two agents
+    Returns a list of tuples (board, action, game_result)
     """
 
+    #Initializes a new game
     env = TicTacToeGameState(np.zeros((3, 3)))
+    train_examples = []
 
+    #Loops until the end of the game
     while True:
 
+        #MCTS plays
         action = mcts.move(env)
         env = env.move(action)
         print(type(action))
-        agent1_train = (env.board, action, env.game_result)
+        agent1_train = (env.board, str(action), env.game_result)
+        train_examples.append(agent1_train)
 
+        #Ends the loop if MCTS won
         if env.is_game_over():
             break
 
+        #Second MCTS plays
         action = mcts.move(env)
         env = env.move(action)
 
-        agent2_train = (env.board, action, env.game_result)
+        agent2_train = (env.board, str(action), env.game_result)
+        train_examples.append(agent2_train)
 
+        #Ends the loop if MCTS won
         if env.is_game_over():
             break
+
+    #Resets the last node of the MCTS
     mcts.reset()
-    #result = env.game_result
-    #return result
-    return agent1_train, agent2_train
+    return train_examples
 
-#res = []
+
 for _ in range(1):
-    r1, r2 = play()
-    #res.append(r)
-    #print('Game Over \n\n')
-#print(f'wins{res.count(1)} losses{res.count(-1)} draws{res.count(0)}')
-print(r1)
-print(r2)
+    examples = play()
+print(examples)
+print(type(examples[0][0]))
 
+#Scores for 5x5 self-play
 score_1 = (234, 233, 533)
 score_2 = (216, 191, 593)
 score_3 = (215, 226, 559)
 score_4 = (225, 240, 535)
 score_5 = (106, 21, 9873)
 
+
+#Pseudo code / TODO s
 def train():
 
     # 1. Init a buffer that contains 10000 positions (board, action, value) & INIT MCTS + NN agents
