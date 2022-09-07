@@ -73,7 +73,7 @@ class Node():
         self._number_of_visits = 0.
         self._results = defaultdict(int) #TODO Figure out how the policy changes this??
         self._untried_actions = None
-        self.policy = 1 #policy - Left as once for debugging.
+        self.policy = 1 #policy - Left it as one for debugging.
 
     @property
     def untried_actions(self):

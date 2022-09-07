@@ -12,6 +12,8 @@ class Parameters():
         self.buffer_size = 1000
         self.learning_rate = 0.001
         self.batch_size = 200
+        self.training_episodes = 1000
+        self.gamma = 0.98
 
 
 params = Parameters()

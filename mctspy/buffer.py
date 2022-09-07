@@ -43,6 +43,7 @@ class Buffer():
             value = 0
 
         self.buffer.append((board, action, value))
+        print(self.buffer)
 
 
     def action_to_tuple(self, action):

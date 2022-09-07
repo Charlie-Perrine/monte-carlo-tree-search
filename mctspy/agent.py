@@ -85,19 +85,8 @@ class A2CAgent(Agent):
         self.BUFFER = collections.deque(maxlen=params.buffer_size)
         self.opt = torch.optim.Adam(
             self.net.parameters(), lr=params.learning_rate)
+        self.policy = None
 
-
-    def move(self, obs, _):
-        """
-        Next action selection.
-        """
-        # TODO
-        mask = np.array([random.randint(0, 1) for _ in range(4672)])
-        obs = torch.tensor(obs).float().unsqueeze(0)
-        _, pol = self.net(obs)
-        pol = pol.squeeze(0).detach().numpy() * mask
-        pol = pol / sum(pol)
-        return np.random.choice(range(len(pol)), p=pol)
 
     def learn(self):
         """
@@ -105,31 +94,31 @@ class A2CAgent(Agent):
         """
         #TODO
 
+        #Getting the predictions and the targets
         board, action, value = BUF.get()
         val, pol = self.net(board)
 
-        #entropy = (pol.detach() * torch.log(pol.detach())).sum(axis=1)
+        self.policy = pol
 
-        #TODO
-        y_pred_pol = torch.log(torch.gather(pol, 1, act).squeeze(1) + 1e-6)
-        y_pred_val = val.squeeze(1)
-        y_true_val = rwd + CFG.gamma * self.net(new)[0].squeeze(1).detach()
+        #Policy and value predictions
+        y_pred_pol = torch.log(pol)
+        y_pred_val = val
+
+        #Went for advs since we don't have the true policy
+        y_true_val = value # TODO + params.gamma * self.net(new)
         adv = y_true_val - y_pred_val
 
-        val_loss = 0.5 * torch.square(adv)
+        #Policy loss
         pol_loss = -(adv * y_pred_pol)
-        loss = (pol_loss + val_loss).mean()  # + 1e-6 * entropy
+        #Val loss
+        val_loss = 0.5 * torch.square(adv)
+        #Total loss
+        loss = (pol_loss + val_loss)#.mean()
 
         self.idx += 1
 
-        #TODO tp??
-        # print(y_pred_pol)
-        tp = pol[0].detach()
-        tps, _ = torch.sort(tp, descending=True)
-        print(tp.max(), tp.mean(), tp.min())
-        print(tps.numpy()[:5])
-        #print(self.idx, pol_loss, loss)
-
+        #TODO ? is this the right thing to do?
+        self.policy = pol
 
         #Backprop
         self.opt.zero_grad()

@@ -1,12 +1,11 @@
-import collections
 import numpy as np
-import random
 
-from agent import RandomAgent, MCTSAgent, A2CAgent
+from agent import MCTSAgent, A2CAgent
+from buffer import BUF
 from game import TicTacToeGameState
+from parameters import params
 
 mcts = MCTSAgent()
-rand = RandomAgent()
 
 def play():
     """
@@ -64,25 +63,25 @@ score_5 = (106, 21, 9873)
 #Pseudo code / TODO s
 def train():
 
-    # 1. Init a buffer that contains 10000 positions (board, action, value) & INIT MCTS + NN agents
-    NN = A2CAgent()
-    MCTS = MCTSAgent(NN.policy) # TODO init MCTS agent with a neural network
+    # 1. Initialization
+    A2C = A2CAgent()
+    MCTS = MCTSAgent(A2C.policy)
 
-    # 2. Call play to generate positions using self.play with MCTS (btw. for chess, take max 30 positions by game to avoid overfitting)
-    # TODO Change the format of action into a list cf. action space pz
-    # TODO change None values to 0
-    for _ in range(1000):
-        positions1, positions2 = play()
-        NN.BUFFER.append(positions1)
-        NN.BUFFER.append(positions2)
+    # 2. Call play to generate positions using self.play with MCTS
+    # Append the buffer with the tuples (board, action, value)
+    # (btw. for chess, take max 30 positions by game to avoid overfitting)
+    for _ in range(params.training_episodes):
+        trains = play()
+        for i in range(len(trains)):
+            BUF.processing_single(trains[i])
 
     # 3. Train the network using the buffer:
-    # TODO Add the stuff to the buffer
-    # TODO get the agent to take stuff from the buffer and feed it to the NN
-    for _ in range(200):
-        A2CAgent().train()
+    # TODO Use BUF.get in the agent to train the NN.
+    for _ in range(params.batch_size):
+        A2C.train()
 
     # 4. After 200 training steps, update MCTS with the new NN
-    MCTSAgent.update(NN.policy) # TODO update MCTS with the new NN
+    # TODO update the MCTS with the new NN, write an update function
+    MCTS.update(A2C.policy)
 
     # 5. Start over.
