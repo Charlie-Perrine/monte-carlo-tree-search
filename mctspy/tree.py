@@ -65,14 +65,15 @@ class MonteCarloTreeSearch(object):
 
 class Node():
 
-    def __init__(self, state, action, parent=None):
+    def __init__(self, state, action, parent=None, policy=None):
         self.state = state
         self.action = action
         self.parent = parent
         self.children = []
         self._number_of_visits = 0.
-        self._results = defaultdict(int)
+        self._results = defaultdict(int) #TODO Figure out how the policy changes this??
         self._untried_actions = None
+        self.policy = policy
 
     @property
     def untried_actions(self):
@@ -120,9 +121,9 @@ class Node():
 
     def best_child(self, c_param=1.4):
         choices_weights = [
-            (c.q / c.n) + c_param * np.sqrt((2 * np.log(self.n) / c.n))
+            (c.q / c.n) + c_param * self.policy * np.sqrt((2 * np.log(self.n) / c.n))
             for c in self.children
-        ]
+        ] #TODO Check formula
         return self.children[np.argmax(choices_weights)]
 
     def rollout_policy(self, possible_moves):

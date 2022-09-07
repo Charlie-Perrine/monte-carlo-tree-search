@@ -2,7 +2,7 @@ import collections
 import numpy as np
 import random
 
-from agent import RandomAgent, MCTSAgent
+from agent import RandomAgent, MCTSAgent, A2CAgent
 from game import TicTacToeGameState
 
 mcts = MCTSAgent()
@@ -55,22 +55,24 @@ score_5 = (106, 21, 9873)
 def train():
 
     # 1. Init a buffer that contains 10000 positions (board, action, value) & INIT MCTS + NN agents
-    BUFFER = collections.deque(maxlen=10000)
     NN = A2CAgent()
-    MCTS = MCTSAgent(NN) # TODO init MCTS agent with a neural network
+    MCTS = MCTSAgent(NN.policy) # TODO init MCTS agent with a neural network
 
-    # DONE 2. Call play to generate positions using self.play with MCTS (btw. for chess, take max 30 positions by game to avoid overfitting)
+    # 2. Call play to generate positions using self.play with MCTS (btw. for chess, take max 30 positions by game to avoid overfitting)
+    # TODO Change the format of action into a list cf. action space pz
+    # TODO change None values to 0
     for _ in range(1000):
         positions1, positions2 = play()
-        BUFFER.append(positions1)
-        BUFFER.append(positions2)
+        NN.BUFFER.append(positions1)
+        NN.BUFFER.append(positions2)
 
     # 3. Train the network using the buffer:
+    # TODO Add the stuff to the buffer
+    # TODO get the agent to take stuff from the buffer and feed it to the NN
     for _ in range(200):
-        A2CAgent().train(BUFFER) # TODO Code an agent to handle the training process with NN
+        A2CAgent().train()
 
     # 4. After 200 training steps, update MCTS with the new NN
-    MCTS.update(NN) # TODO update MCTS with the new NN
+    MCTSAgent.update(NN.policy) # TODO update MCTS with the new NN
 
     # 5. Start over.
-    return BUFFER

@@ -2,11 +2,16 @@
 Agents
 """
 
+import collections
 import random
 import numpy as np
 
+import torch
+
 from tree import Node, MonteCarloTreeSearch
 from parameters import params
+
+from network import A2CNet
 
 class Agent:
     def __init__(self) -> None:
@@ -64,3 +69,76 @@ class MCTSAgent(Agent):
         self.last = node, action
 
         return best_node.action
+
+class A2CAgent(Agent):
+    """
+    A2C Agent
+    """
+
+    def __init__(self):
+        super().__init__()
+
+        self.idx = 0
+        self.net = A2CNet()
+        self.BUFFER = collections.deque(maxlen=params.buffer_size)
+        self.opt = torch.optim.Adam(
+            self.net.parameters(), lr=params.learning_rate)
+
+
+    def move(self, obs, _):
+        """
+        Next action selection.
+        """
+        # TODO
+        mask = np.array([random.randint(0, 1) for _ in range(4672)])
+        obs = torch.tensor(obs).float().unsqueeze(0)
+        _, pol = self.net(obs)
+        pol = pol.squeeze(0).detach().numpy() * mask
+        pol = pol / sum(pol)
+        return np.random.choice(range(len(pol)), p=pol)
+
+    def learn(self):
+        """
+        Trains the model.
+        """
+        old, act, rwd, new = BUF.get()
+        val, pol = self.net(old)
+
+        entropy = (pol.detach() * torch.log(pol.detach())).sum(axis=1)
+
+        y_pred_pol = torch.log(torch.gather(pol, 1, act).squeeze(1) + 1e-6)
+        y_pred_val = val.squeeze(1)
+        y_true_val = rwd + CFG.gamma * self.net(new)[0].squeeze(1).detach()
+        adv = y_true_val - y_pred_val
+
+        val_loss = 0.5 * torch.square(adv)
+        pol_loss = -(adv * y_pred_pol)
+        loss = (pol_loss + val_loss).mean()  # + 1e-6 * entropy
+
+        self.idx += 1
+
+        # print(y_pred_pol)
+        tp = pol[0].detach()
+        tps, _ = torch.sort(tp, descending=True)
+        print(tp.max(), tp.mean(), tp.min())
+        print(tps.numpy()[:5])
+        #print(self.idx, pol_loss, loss)
+
+        self.opt.zero_grad()
+        loss.backward()
+        #torch.nn.utils.clip_grad_norm_(self.net.pol.parameters(), 0.001)
+        #torch.nn.utils.clip_grad_norm_(self.net.val.parameters(), 0.001)
+        self.opt.step()
+
+    def save(self, path: str):
+        """
+        Save the agent's model to disk.
+        """
+        torch.save(self.net.state_dict(), path)
+
+    def load(self, path: str):
+        """
+        Load the agent's weights from disk.
+        """
+        dat = torch.load(path, map_location=torch.device("cpu"))
+        self.net.load_state_dict(dat)

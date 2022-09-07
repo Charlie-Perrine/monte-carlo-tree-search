@@ -9,6 +9,8 @@ class Parameters():
         #Number of simulations performed to get the best action
         self.num_simulations = 10
         self.convolution_layers = 3
+        self.buffer_size = 1000
+        self.learning_rate = 0.001
 
 
 params = Parameters()
