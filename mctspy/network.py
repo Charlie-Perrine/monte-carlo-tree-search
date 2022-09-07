@@ -79,4 +79,4 @@ example_tuple = torch.permute(example_tuple.float(), (2, 0, 1))
 
 A2C = A2CNet()
 A2C(example_tuple)
-print(example_tuple, example_tuple.shape)
+#print(example_tuple, example_tuple.shape)

@@ -6,6 +6,7 @@ from game import TicTacToeGameState
 from parameters import params
 
 mcts = MCTSAgent()
+A2C = A2CAgent()
 
 def play():
     """
@@ -23,7 +24,6 @@ def play():
         #MCTS plays
         action = mcts.move(env)
         env = env.move(action)
-        print(type(action))
         agent1_train = (env.board, str(action), env.game_result)
         train_examples.append(agent1_train)
 
@@ -47,11 +47,6 @@ def play():
     return train_examples
 
 
-for _ in range(1):
-    examples = play()
-print(examples)
-print(type(examples[0][0]))
-
 #Scores for 5x5 self-play
 score_1 = (234, 233, 533)
 score_2 = (216, 191, 593)
@@ -64,24 +59,32 @@ score_5 = (106, 21, 9873)
 def train():
 
     # 1. Initialization
-    A2C = A2CAgent()
-    MCTS = MCTSAgent(A2C.policy)
+    #A2C = A2CAgent()
+    #MCTS = MCTSAgent(A2C.policy)
 
     # 2. Call play to generate positions using self.play with MCTS
     # Append the buffer with the tuples (board, action, value)
     # (btw. for chess, take max 30 positions by game to avoid overfitting)
+    counter_1 = 1
     for _ in range(params.training_episodes):
+        print(f'Playing game number {counter_1}')
         trains = play()
         for i in range(len(trains)):
             BUF.processing_single(trains[i])
+        counter_1 += 1
 
     # 3. Train the network using the buffer:
     # TODO Use BUF.get in the agent to train the NN.
+    counter_2 = 0
     for _ in range(params.batch_size):
-        A2C.train()
+        print(f'Training episode number {counter_2}')
+        A2C.learn()
+        counter_2 += 1
 
     # 4. After 200 training steps, update MCTS with the new NN
     # TODO update the MCTS with the new NN, write an update function
-    MCTS.update(A2C.policy)
+    #MCTS.update(A2C.policy)
 
     # 5. Start over.
+
+train()

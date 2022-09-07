@@ -43,7 +43,6 @@ class Buffer():
             value = 0
 
         self.buffer.append((board, action, value))
-        print(self.buffer)
 
 
     def action_to_tuple(self, action):
@@ -67,6 +66,9 @@ class Buffer():
 
         batch = random.sample(self.buffer, params.batch_size)
         board, action, value = zip(*batch)
+        board = board[0]
+        action = torch.tensor(action)
+        value = torch.tensor(value)
         return board, action, value
 
 BUF = Buffer()

@@ -98,20 +98,18 @@ class A2CAgent(Agent):
         board, action, value = BUF.get()
         val, pol = self.net(board)
 
-        self.policy = pol
-
         #Policy and value predictions
-        y_pred_pol = torch.log(pol)
-        y_pred_val = val
+        pred_pol = torch.log(pol)
+        pred_val = val.mean().detach()
 
-        #Went for advs since we don't have the true policy
-        y_true_val = value # TODO + params.gamma * self.net(new)
-        adv = y_true_val - y_pred_val
+        #TODO get the true policy from the MCTS
+        true_val = value # TODO + params.gamma * self.net(new)
+        true_pol = 0
 
         #Policy loss
-        pol_loss = -(adv * y_pred_pol)
+        pol_loss = -torch.sum(pred_pol - true_pol) / true_pol.size()
         #Val loss
-        val_loss = 0.5 * torch.square(adv)
+        val_loss = torch.sum((pred_val - true_val) ** 2) / true_val.size()
         #Total loss
         loss = (pol_loss + val_loss)#.mean()
 
