@@ -34,7 +34,6 @@ def play():
         #Second MCTS plays
         action = mcts.move(env)
         env = env.move(action)
-
         agent2_train = (env.board, str(action), env.game_result)
         train_examples.append(agent2_train)
 
@@ -87,4 +86,5 @@ def train():
 
     # 5. Start over.
 
-train()
+play()
+#train()

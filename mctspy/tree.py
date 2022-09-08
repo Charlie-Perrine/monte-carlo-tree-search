@@ -129,7 +129,24 @@ class Node():
     def rollout_policy(self, possible_moves):
         return possible_moves[np.random.randint(len(possible_moves))]
 
-    def getActionProb(self, state):
+
+    def normalize(self, policy, mask):
+        """
+        Ensure a policy is a proper probability distribution.
+        """
+        # Apply the action mask to the policy
+        policy = policy * mask
+
+        # Make it equal to the mask if no actions are available
+        if sum(policy) == 0:
+            policy = mask.astype("float64")
+
+        # Normalize the distribution
+        policy /= sum(policy)
+        return policy
+
+
+    def getActionProb(self, env):
             """
             This function performs params.num_simulations simulations of MCTS
             starting from a state (board).
@@ -140,30 +157,32 @@ class Node():
             Note: for chess, would need to add a tempcontrol after 30 moves.
             Since T3 isn't as complex, didn't add it here.
             """
-            exit()
-            # Get the valid action mask of the original board
-            mask = self.game.getValidMoves(canonicalBoard, None)
 
-            # Run board search
-            # TODO Explain better what this does here
+            # Gets an action mask
+            #Gets the coordinates for the empty spots in the grid
+            indices_t3 = np.where(env.board == 0)
+            #Stores the indexes in PZ format
+            index = []
+            for coords in list(zip(indices_t3[0], indices_t3[1])):
+                index.append(3 * coords[0] + coords[1])
+            #Create our mask
+            mask = [0 for _ in range (9)]
+            for i in index:
+                mask[i] = 1
+            exit()
+            #return np.array([1 if i in chess_utils.legal_moves(board) else 0 for i in range(4672)])
+
+            # TODO Run board search
             for i in range(self.args.numMCTSSims):
                 self.search(canonicalBoard)
 
+            #TODO
             s = self.game.stringRepresentation(canonicalBoard)
 
-
+            #TODO
             counts = [self.Nsa[(s, a)] if (s, a) in self.Nsa else 0 for a in range(self.game.getActionSize())]
 
-            # if temp == 0:
-            #     # TODO Mask is going to be wrong here
-            #     bestAs = np.array(np.argwhere(counts == np.max(counts))).flatten()
-            #     bestA = np.random.choice(bestAs)
-            #     probs = np.zeros(len(counts))
-            #     probs[bestA] = 1
-            #     counts = self.normalize(probs, mask)
-            #     return counts
-
-            counts = [x ** (1. / temp) for x in counts]
+            #TODO
+            counts = [x  for x in counts]
             counts = self.normalize(counts, mask)
-            # TODO The normalize happens on the coach side
             return counts
