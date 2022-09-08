@@ -169,13 +169,12 @@ class Node():
             mask = [0 for _ in range (9)]
             for i in index:
                 mask[i] = 1
-            exit()
-            #return np.array([1 if i in chess_utils.legal_moves(board) else 0 for i in range(4672)])
 
             # TODO Run board search
             for i in range(self.args.numMCTSSims):
                 self.search(canonicalBoard)
 
+            exit()
             #TODO
             s = self.game.stringRepresentation(canonicalBoard)
 
