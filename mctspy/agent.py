@@ -103,7 +103,7 @@ class A2CAgent(Agent):
         pred_val = val.mean().detach()
 
         #TODO get the true policy from the MCTS
-        true_val = value # TODO + params.gamma * self.net(new)
+        true_val = value
         true_pol = 0
 
         #Policy loss

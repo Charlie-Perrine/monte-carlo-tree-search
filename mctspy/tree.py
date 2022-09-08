@@ -128,3 +128,42 @@ class Node():
 
     def rollout_policy(self, possible_moves):
         return possible_moves[np.random.randint(len(possible_moves))]
+
+    def getActionProb(self, state):
+            """
+            This function performs params.num_simulations simulations of MCTS
+            starting from a state (board).
+
+            Returns:
+                a policy vector where the probability of the ith action is
+                    proportional to number_of_visits
+            Note: for chess, would need to add a tempcontrol after 30 moves.
+            Since T3 isn't as complex, didn't add it here.
+            """
+            exit()
+            # Get the valid action mask of the original board
+            mask = self.game.getValidMoves(canonicalBoard, None)
+
+            # Run board search
+            # TODO Explain better what this does here
+            for i in range(self.args.numMCTSSims):
+                self.search(canonicalBoard)
+
+            s = self.game.stringRepresentation(canonicalBoard)
+
+
+            counts = [self.Nsa[(s, a)] if (s, a) in self.Nsa else 0 for a in range(self.game.getActionSize())]
+
+            # if temp == 0:
+            #     # TODO Mask is going to be wrong here
+            #     bestAs = np.array(np.argwhere(counts == np.max(counts))).flatten()
+            #     bestA = np.random.choice(bestAs)
+            #     probs = np.zeros(len(counts))
+            #     probs[bestA] = 1
+            #     counts = self.normalize(probs, mask)
+            #     return counts
+
+            counts = [x ** (1. / temp) for x in counts]
+            counts = self.normalize(counts, mask)
+            # TODO The normalize happens on the coach side
+            return counts
