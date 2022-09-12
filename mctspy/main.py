@@ -13,7 +13,7 @@ def play():
     Playing a game of Tic Tac Toe with two agents
     """
 
-    env = TicTacToeGameState(np.zeros((3, 3)))
+    env = TicTacToeGameState(np.zeros((6, 6)))
 
     while True:
 
@@ -36,8 +36,9 @@ def play():
     mcts.reset()
     return result
 
+
 res = []
-for _ in range(10000):
+for _ in range(100):
     r = play()
     res.append(r)
     print('Game Over \n\n')
