@@ -73,6 +73,7 @@ class Node():
         self._number_of_visits = 0.
         self._results = defaultdict(int) #TODO Figure out how the policy changes this??
         self._untried_actions = None
+        #TODO change the policy bases on Actor Critic
         self.policy = 1 #policy - Left it as one for debugging.
 
     @property
@@ -170,18 +171,20 @@ class Node():
             for i in index:
                 mask[i] = 1
 
-            # TODO Run board search
+            exit()
+            # TODO Run board search. Might need to create a train function.
+            # Or could be a self.mcts.best_action . How to link the tree to the node?
             for i in range(self.args.numMCTSSims):
                 self.search(canonicalBoard)
 
-            exit()
-            #TODO
+            #TODO turn it into the right format
             s = self.game.stringRepresentation(canonicalBoard)
 
-            #TODO
+            #TODO calculate the policy
             counts = [self.Nsa[(s, a)] if (s, a) in self.Nsa else 0 for a in range(self.game.getActionSize())]
 
             #TODO
             counts = [x  for x in counts]
+            #TODO rewrite the normalization function
             counts = self.normalize(counts, mask)
             return counts
