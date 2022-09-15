@@ -3,6 +3,7 @@ from collections import defaultdict
 
 import time
 
+#TODO Might need to merge the two classes.
 class MonteCarloTreeSearch(object):
 
     def __init__(self, node):
