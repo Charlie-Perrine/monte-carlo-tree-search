@@ -1,85 +1,29 @@
-## mctspy : python implementation of Monte Carlo Tree Search algorithm
-
- 
-Basic python implementation of [Monte Carlo Tree Search](https://int8.io/monte-carlo-tree-search-beginners-guide) (MCTS) intended to run on small game trees. 
- 
-
-### Installation
-
-```
-pip3 install mctspy
-``` 
-
-### Running tic-tac-toe example 
-
-to run tic-tac-toe example:
-
-```python
-
-import numpy as np
-from mctspy.tree.nodes import TwoPlayersGameMonteCarloTreeSearchNode
-from mctspy.tree.search import MonteCarloTreeSearch
-from mctspy.games.examples.tictactoe import TicTacToeGameState
-
-state = np.zeros((3,3))
-initial_board_state = TicTacToeGameState(state = state, next_to_move=1)
-
-root = TwoPlayersGameMonteCarloTreeSearchNode(state = initial_board_state)
-mcts = MonteCarloTreeSearch(root)
-best_node = mcts.best_action(10000)
-
-```
+## (IN PROGRESS) Monte Carlos Tree Search and Advantage Actor Critic
 
 
-### Running MCTS for your own 2 players zero-sum game 
+Python implementation of a [Monte Carlo Tree Search](https://int8.io/monte-carlo-tree-search-beginners-guide) (MCTS) and Advtange Actor Critic (A2C) to Tic Tac Toe.
 
-If you want to apply MCTS for your own game, its state implementation should derive from  
-`mmctspy.games.common.TwoPlayersGameState` 
 
-(lookup `mctspy.games.examples.tictactoe.TicTacToeGameState` for inspiration)
+### Overview
 
-### Example Game Play
-```python
-import numpy as np
-from mctspy.tree.nodes import TwoPlayersGameMonteCarloTreeSearchNode
-from mctspy.tree.search import MonteCarloTreeSearch
-from mctspy.games.examples.connect4 import Connect4GameState
+The goal of this project is to develop a Neural Network capable of playing Tic Tac Toe, with the ultimate goal of broadening it's scope to other, more complex games.
+We decided to implement a reinforcement learning model since they work well when it comes to learning how to play games.
 
-# define inital state
-state = np.zeros((7, 7))
-board_state = Connect4GameState(
-    state=state, next_to_move=np.random.choice([-1, 1]), win=4)
 
-# link pieces to icons
-pieces = {0: " ", 1: "X", -1: "O"}
+### Credits
 
-# print a single row of the board
-def stringify(row):
-    return " " + " | ".join(map(lambda x: pieces[int(x)], row)) + " "
+The code for playing Tic Tac Toe and for the MCTS was adapted from [int8's](https://github.com/int8/monte-carlo-tree-search) implementation of the Monte Carlo Tree Search.
 
-# display the whole board
-def display(board):
-    board = board.copy().T[::-1]
-    for row in board[:-1]:
-        print(stringify(row))
-        print("-"*(len(row)*4-1))
-    print(stringify(board[-1]))
-    print()
 
-display(board_state.board)
-# keep playing until game terminates
-while board_state.game_result is None:
-    # calculate best move
-    root = TwoPlayersGameMonteCarloTreeSearchNode(state=board_state)
-    mcts = MonteCarloTreeSearch(root)
-    best_node = mcts.best_action(total_simulation_seconds=1)
+### Details of the Project
 
-    # update board
-    board_state = best_node.state
-    # display board
-    display(board_state.board)
+In the master branch, you can train a MCTS to play a game of Tic Tac Toe.
+It can learn by playing against a random agent, or against it's own self. We found self-play to be much more effective than the random agent.
+In the main.py file, the default setting is for a 3x3 Tic Tac Toe grid. But you can easily train it on a bigger grid by going into the play function and changing the environment's initialization from a np.zeros((3, 3)) to a bigger sized array.
 
-# print result
-print(pieces[board_state.game_result])
+The char branch is in progress. We are currently coding an A2C on top of the MCTS. The Monte Carlo learns really quickly in Tic Tac Toe, but we want to have a working A2C + MCTS on a simple game before moving onto more complicated games.
 
-```
+
+
+
+Feel free to reach out if you have any questions or comments!

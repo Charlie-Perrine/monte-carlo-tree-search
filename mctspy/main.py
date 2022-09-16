@@ -13,7 +13,7 @@ def play():
     Playing a game of Tic Tac Toe with two agents
     """
 
-    env = TicTacToeGameState(np.zeros((6, 6)))
+    env = TicTacToeGameState(np.zeros((3, 3)))
 
     while True:
 
