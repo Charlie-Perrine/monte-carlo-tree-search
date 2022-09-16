@@ -1,7 +1,7 @@
 ## (IN PROGRESS) Monte Carlos Tree Search and Advantage Actor Critic
 
 
-Python implementation of a [Monte Carlo Tree Search](https://int8.io/monte-carlo-tree-search-beginners-guide) (MCTS) and Advtange Actor Critic (A2C) to Tic Tac Toe.
+Python implementation of a [Monte Carlo Tree Search](https://int8.io/monte-carlo-tree-search-beginners-guide) (MCTS) and Advantage Actor Critic (A2C) to Tic Tac Toe.
 
 
 ### Overview
