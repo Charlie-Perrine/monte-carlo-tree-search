@@ -24,6 +24,18 @@ In the main.py file, the default setting is for a 3x3 Tic Tac Toe grid. But you 
 The char branch is in progress. We are currently coding an A2C on top of the MCTS. The Monte Carlo learns really quickly in Tic Tac Toe, but we want to have a working A2C + MCTS on a simple game before moving onto more complicated games.
 
 
+### Detailed Package Workflow
+
+master branch:
+- `main.py` is the entry point of the package. You can play Tic Tac Toe and train the MCTS.
+- `agent.py` defines the different agents: the random agent that plays a random legal move and the MCTS Agent that runs a tree search in order to pick the best legal move.
+- `game.py` was written by [int8](https://github.com/int8/monte-carlo-tree-search) and creates the Tic Tac Toe environment. We would need to adapt this file in order to play other games.
+- `network.py` contains the A2C Neural network.
+- `parameters.py` defines all of the parameters needed in the package.
+- `tree.py` contains the main structure of the MCTS. It runs a tree search and picks the best node (action) given a board state.
+
+char branch:
+(In progress)
 
 
 Feel free to reach out if you have any questions or comments!
